@@ -1,0 +1,67 @@
+import { TrendingUp, TrendingDown, Wallet } from 'lucide-react'
+import { formatCurrency } from '@/lib/utils'
+
+interface Props {
+  totalIncome: number
+  totalExpense: number
+  balance: number
+}
+
+export function SummaryCards({ totalIncome, totalExpense, balance }: Props) {
+  const cards = [
+    {
+      label: 'Receitas',
+      value: totalIncome,
+      icon: TrendingUp,
+      gradient: 'from-emerald-500 to-emerald-600',
+      bg: 'bg-emerald-50',
+      iconColor: 'text-emerald-600',
+      delay: 'delay-100',
+    },
+    {
+      label: 'Despesas',
+      value: totalExpense,
+      icon: TrendingDown,
+      gradient: 'from-red-500 to-red-600',
+      bg: 'bg-red-50',
+      iconColor: 'text-red-500',
+      delay: 'delay-200',
+    },
+    {
+      label: 'Saldo',
+      value: balance,
+      icon: Wallet,
+      gradient: balance >= 0 ? 'from-blue-500 to-blue-600' : 'from-red-500 to-orange-500',
+      bg: balance >= 0 ? 'bg-blue-50' : 'bg-red-50',
+      iconColor: balance >= 0 ? 'text-blue-600' : 'text-red-500',
+      delay: 'delay-300',
+    },
+  ]
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      {cards.map((card) => (
+        <div
+          key={card.label}
+          className={`bg-white rounded-2xl border border-slate-100 p-6 shadow-sm animate-fade-up ${card.delay} hover:shadow-md transition-shadow`}
+        >
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-slate-500 text-sm font-medium">{card.label}</span>
+            <div className={`w-10 h-10 ${card.bg} rounded-xl flex items-center justify-center`}>
+              <card.icon className={`w-5 h-5 ${card.iconColor}`} />
+            </div>
+          </div>
+          <div
+            className={`text-2xl font-bold bg-gradient-to-r ${card.gradient} bg-clip-text text-transparent`}
+            style={{ fontFamily: 'Bricolage Grotesque, sans-serif' }}
+          >
+            {formatCurrency(card.value)}
+          </div>
+          <div className="mt-2 h-1 rounded-full bg-slate-100 overflow-hidden">
+            <div className={`h-full rounded-full bg-gradient-to-r ${card.gradient} opacity-60`} style={{ width: '100%' }} />
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
