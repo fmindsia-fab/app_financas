@@ -70,13 +70,15 @@ export default function Navbar({ user }: { user: SupabaseUser }) {
               <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <button
-                  onClick={() => logout()}
-                  className="flex items-center gap-2 w-full text-red-500 cursor-pointer"
-                >
-                  <LogOut className="w-4 h-4" />
-                  Sair
-                </button>
+                <form action={logout} className="w-full">
+                  <button
+                    type="submit"
+                    className="flex items-center gap-2 w-full text-red-500 cursor-pointer"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Sair
+                  </button>
+                </form>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

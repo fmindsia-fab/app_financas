@@ -19,11 +19,11 @@ export function ThemeToggle({ className }: { className?: string }) {
       onClick={() => setTheme(isDark ? 'light' : 'dark')}
       aria-label="Alternar tema"
       title={isDark ? 'Modo claro' : 'Modo escuro'}
-      className={`w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-slate-100 dark:hover:bg-white/10 ${className ?? ''}`}
+      className={`w-8 h-8 flex items-center justify-center rounded-lg transition-colors hover:bg-white/10 ${className ?? ''}`}
     >
       {isDark
-        ? <Sun className="w-4 h-4 text-slate-400 hover:text-white" />
-        : <Moon className="w-4 h-4 text-slate-500" />
+        ? <Sun className="w-4 h-4 text-slate-300" />
+        : <Moon className="w-4 h-4 text-slate-300" />
       }
     </button>
   )
