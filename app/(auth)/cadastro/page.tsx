@@ -34,7 +34,7 @@ export default function CadastroPage() {
 
     const result = await register(formData)
     if (result?.error) {
-      setError('Erro ao criar conta. Verifique o e-mail e tente novamente.')
+      setError(result.error)
       setLoading(false)
       return
     }

@@ -25,13 +25,22 @@ export async function proxy(request: NextRequest) {
     }
   )
 
+  const pathname = request.nextUrl.pathname
+  const code = request.nextUrl.searchParams.get('code')
+
+  // Troca do código de confirmação de e-mail (PKCE flow)
+  if (code && pathname === '/') {
+    const url = request.nextUrl.clone()
+    url.pathname = '/auth/callback'
+    return NextResponse.redirect(url)
+  }
+
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
   const protectedPaths = ['/dashboard', '/transacoes', '/relatorios']
   const authPaths = ['/login', '/cadastro']
-  const pathname = request.nextUrl.pathname
 
   const isProtected = protectedPaths.some((p) => pathname.startsWith(p))
   const isAuthPage = authPaths.some((p) => pathname.startsWith(p))
