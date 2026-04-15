@@ -4,7 +4,8 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { TrendingUp, LayoutDashboard, ArrowLeftRight, BarChart3, LogOut, User } from 'lucide-react'
 import type { User as SupabaseUser } from '@supabase/supabase-js'
-import { logout } from '@/lib/actions/auth'
+import { useRouter } from 'next/navigation'
+import { signOut } from '@/lib/actions/auth'
 import { NotificationBell } from '@/components/notification-bell'
 import { ThemeToggle } from '@/components/theme-toggle'
 import {
@@ -20,6 +21,7 @@ const navLinks = [
 
 export default function Navbar({ user }: { user: SupabaseUser }) {
   const pathname = usePathname()
+  const router = useRouter()
 
   return (
     <nav className="bg-[#0f172a] border-b border-white/5 sticky top-0 z-40">
@@ -69,16 +71,15 @@ export default function Navbar({ user }: { user: SupabaseUser }) {
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <form action={logout} className="w-full">
-                  <button
-                    type="submit"
-                    className="flex items-center gap-2 w-full text-red-500 cursor-pointer"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    Sair
-                  </button>
-                </form>
+              <DropdownMenuItem
+                className="text-red-500 cursor-pointer focus:text-red-500"
+                onSelect={async () => {
+                  await signOut()
+                  router.push('/login')
+                }}
+              >
+                <LogOut className="w-4 h-4" />
+                Sair
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
