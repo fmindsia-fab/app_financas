@@ -23,7 +23,7 @@ export function TransactionForm({ defaultValues, onSubmit, onCancel }: Props) {
     setLoading(false)
   }
 
-  const today = new Date().toISOString().split('T')[0]
+  const today = new Date().toLocaleDateString('en-CA') // YYYY-MM-DD no fuso local
 
   const inputClass = "w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-[#0f172a] text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
 
