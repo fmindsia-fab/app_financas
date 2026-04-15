@@ -41,10 +41,10 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-8 animate-fade-up">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900 capitalize" style={{ fontFamily: 'Bricolage Grotesque, sans-serif' }}>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white capitalize" style={{ fontFamily: 'Bricolage Grotesque, sans-serif' }}>
           Dashboard
         </h1>
-        <p className="text-slate-500 text-sm mt-1">Resumo de {monthName}</p>
+        <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Resumo de {monthName}</p>
       </div>
 
       <SummaryCards
@@ -54,16 +54,16 @@ export default async function DashboardPage() {
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
-          <h2 className="font-bold text-slate-900 mb-4" style={{ fontFamily: 'Bricolage Grotesque, sans-serif' }}>
+        <div className="bg-white dark:bg-[#1e293b] rounded-2xl border border-slate-100 dark:border-slate-700/50 p-6 shadow-sm">
+          <h2 className="font-bold text-slate-900 dark:text-white mb-4" style={{ fontFamily: 'Bricolage Grotesque, sans-serif' }}>
             Despesas por Categoria
           </h2>
           <CategoryPieChart transactions={transactions} />
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
+        <div className="bg-white dark:bg-[#1e293b] rounded-2xl border border-slate-100 dark:border-slate-700/50 p-6 shadow-sm">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-bold text-slate-900" style={{ fontFamily: 'Bricolage Grotesque, sans-serif' }}>
+            <h2 className="font-bold text-slate-900 dark:text-white" style={{ fontFamily: 'Bricolage Grotesque, sans-serif' }}>
               Últimas Transações
             </h2>
             <a href="/transacoes" className="text-blue-500 hover:text-blue-600 text-sm font-medium transition-colors">

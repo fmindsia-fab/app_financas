@@ -25,10 +25,12 @@ export function TransactionForm({ defaultValues, onSubmit, onCancel }: Props) {
 
   const today = new Date().toISOString().split('T')[0]
 
+  const inputClass = "w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-[#0f172a] text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       {/* Type toggle */}
-      <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl">
+      <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 dark:bg-slate-700/50 rounded-xl">
         {(['expense', 'income'] as const).map((t) => (
           <button
             key={t}
@@ -39,7 +41,7 @@ export function TransactionForm({ defaultValues, onSubmit, onCancel }: Props) {
                 ? t === 'expense'
                   ? 'bg-red-500 text-white shadow-sm'
                   : 'bg-emerald-500 text-white shadow-sm'
-                : 'text-slate-500 hover:text-slate-700'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
             }`}
           >
             {t === 'expense' ? '💸 Despesa' : '💰 Receita'}
@@ -50,20 +52,20 @@ export function TransactionForm({ defaultValues, onSubmit, onCancel }: Props) {
 
       {/* Description */}
       <div className="space-y-1.5">
-        <label className="text-sm font-medium text-slate-700">Descrição</label>
+        <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Descrição</label>
         <input
           name="description"
           type="text"
           required
           defaultValue={defaultValues?.description}
           placeholder="Ex: Mercado, Salário, Netflix..."
-          className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+          className={inputClass}
         />
       </div>
 
       {/* Amount */}
       <div className="space-y-1.5">
-        <label className="text-sm font-medium text-slate-700">Valor (R$)</label>
+        <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Valor (R$)</label>
         <input
           name="amount"
           type="number"
@@ -72,30 +74,30 @@ export function TransactionForm({ defaultValues, onSubmit, onCancel }: Props) {
           required
           defaultValue={defaultValues?.amount}
           placeholder="0,00"
-          className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+          className={inputClass}
         />
       </div>
 
       {/* Date */}
       <div className="space-y-1.5">
-        <label className="text-sm font-medium text-slate-700">Data</label>
+        <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Data</label>
         <input
           name="date"
           type="date"
           required
           defaultValue={defaultValues?.date ?? today}
-          className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+          className={inputClass}
         />
       </div>
 
       {/* Category */}
       <div className="space-y-1.5">
-        <label className="text-sm font-medium text-slate-700">Categoria</label>
+        <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Categoria</label>
         <select
           name="category"
           required
           defaultValue={defaultValues?.category ?? ''}
-          className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-slate-700 transition-all"
+          className={inputClass}
         >
           <option value="" disabled>Selecione uma categoria</option>
           {CATEGORIES.map(c => (
@@ -109,7 +111,7 @@ export function TransactionForm({ defaultValues, onSubmit, onCancel }: Props) {
         <button
           type="button"
           onClick={onCancel}
-          className="flex-1 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors"
+          className="flex-1 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
         >
           Cancelar
         </button>

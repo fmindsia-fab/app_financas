@@ -32,10 +32,10 @@ export default async function RelatoriosPage({ searchParams }: Props) {
   return (
     <div className="space-y-6 animate-fade-up">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900" style={{ fontFamily: 'Bricolage Grotesque, sans-serif' }}>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white" style={{ fontFamily: 'Bricolage Grotesque, sans-serif' }}>
           Relatórios
         </h1>
-        <p className="text-slate-500 text-sm mt-1">Análise detalhada das suas finanças</p>
+        <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Análise detalhada das suas finanças</p>
       </div>
       <ReportsClient transactions={transactions} currentMes={mes} currentAno={ano} />
     </div>

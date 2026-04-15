@@ -6,6 +6,7 @@ import { TrendingUp, LayoutDashboard, ArrowLeftRight, BarChart3, LogOut, User } 
 import type { User as SupabaseUser } from '@supabase/supabase-js'
 import { logout } from '@/lib/actions/auth'
 import { NotificationBell } from '@/components/notification-bell'
+import { ThemeToggle } from '@/components/theme-toggle'
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
@@ -55,12 +56,13 @@ export default function Navbar({ user }: { user: SupabaseUser }) {
         </div>
 
         {/* Right side */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
+          <ThemeToggle />
           <NotificationBell />
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="w-8 h-8 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-full flex items-center justify-center text-white text-xs font-bold hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-[#0f172a]">
+              <button className="w-8 h-8 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-full flex items-center justify-center text-white text-xs font-bold hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-[#0f172a] ml-1">
                 {user.email?.charAt(0).toUpperCase() ?? <User className="w-4 h-4" />}
               </button>
             </DropdownMenuTrigger>
@@ -68,12 +70,13 @@ export default function Navbar({ user }: { user: SupabaseUser }) {
               <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <form action={logout}>
-                  <button type="submit" className="flex items-center gap-2 w-full text-red-500">
-                    <LogOut className="w-4 h-4" />
-                    Sair
-                  </button>
-                </form>
+                <button
+                  onClick={() => logout()}
+                  className="flex items-center gap-2 w-full text-red-500 cursor-pointer"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Sair
+                </button>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

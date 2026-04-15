@@ -14,8 +14,8 @@ export function SummaryCards({ totalIncome, totalExpense, balance }: Props) {
       value: totalIncome,
       icon: TrendingUp,
       gradient: 'from-emerald-500 to-emerald-600',
-      bg: 'bg-emerald-50',
-      iconColor: 'text-emerald-600',
+      bg: 'bg-emerald-50 dark:bg-emerald-500/10',
+      iconColor: 'text-emerald-600 dark:text-emerald-400',
       delay: 'delay-100',
     },
     {
@@ -23,8 +23,8 @@ export function SummaryCards({ totalIncome, totalExpense, balance }: Props) {
       value: totalExpense,
       icon: TrendingDown,
       gradient: 'from-red-500 to-red-600',
-      bg: 'bg-red-50',
-      iconColor: 'text-red-500',
+      bg: 'bg-red-50 dark:bg-red-500/10',
+      iconColor: 'text-red-500 dark:text-red-400',
       delay: 'delay-200',
     },
     {
@@ -32,8 +32,8 @@ export function SummaryCards({ totalIncome, totalExpense, balance }: Props) {
       value: balance,
       icon: Wallet,
       gradient: balance >= 0 ? 'from-blue-500 to-blue-600' : 'from-red-500 to-orange-500',
-      bg: balance >= 0 ? 'bg-blue-50' : 'bg-red-50',
-      iconColor: balance >= 0 ? 'text-blue-600' : 'text-red-500',
+      bg: balance >= 0 ? 'bg-blue-50 dark:bg-blue-500/10' : 'bg-red-50 dark:bg-red-500/10',
+      iconColor: balance >= 0 ? 'text-blue-600 dark:text-blue-400' : 'text-red-500 dark:text-red-400',
       delay: 'delay-300',
     },
   ]
@@ -43,10 +43,10 @@ export function SummaryCards({ totalIncome, totalExpense, balance }: Props) {
       {cards.map((card) => (
         <div
           key={card.label}
-          className={`bg-white rounded-2xl border border-slate-100 p-6 shadow-sm animate-fade-up ${card.delay} hover:shadow-md transition-shadow`}
+          className={`bg-white dark:bg-[#1e293b] rounded-2xl border border-slate-100 dark:border-slate-700/50 p-6 shadow-sm animate-fade-up ${card.delay} hover:shadow-md transition-shadow`}
         >
           <div className="flex items-center justify-between mb-4">
-            <span className="text-slate-500 text-sm font-medium">{card.label}</span>
+            <span className="text-slate-500 dark:text-slate-400 text-sm font-medium">{card.label}</span>
             <div className={`w-10 h-10 ${card.bg} rounded-xl flex items-center justify-center`}>
               <card.icon className={`w-5 h-5 ${card.iconColor}`} />
             </div>
@@ -57,7 +57,7 @@ export function SummaryCards({ totalIncome, totalExpense, balance }: Props) {
           >
             {formatCurrency(card.value)}
           </div>
-          <div className="mt-2 h-1 rounded-full bg-slate-100 overflow-hidden">
+          <div className="mt-2 h-1 rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden">
             <div className={`h-full rounded-full bg-gradient-to-r ${card.gradient} opacity-60`} style={{ width: '100%' }} />
           </div>
         </div>
