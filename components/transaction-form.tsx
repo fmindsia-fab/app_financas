@@ -1,19 +1,26 @@
 'use client'
 
-import { useState } from 'react'
-import { Loader2 } from 'lucide-react'
+import { useState, useTransition } from 'react'
+import { Loader2, Plus, X } from 'lucide-react'
 import type { Transaction } from '@/lib/types'
 import { CATEGORIES } from '@/lib/types'
+import { createUserCategory } from '@/lib/actions/categories'
+import { toast } from 'sonner'
 
 interface Props {
   defaultValues?: Partial<Transaction>
+  userCategories?: string[]
   onSubmit: (formData: FormData) => Promise<void>
   onCancel: () => void
 }
 
-export function TransactionForm({ defaultValues, onSubmit, onCancel }: Props) {
+export function TransactionForm({ defaultValues, userCategories = [], onSubmit, onCancel }: Props) {
   const [loading, setLoading] = useState(false)
   const [type, setType] = useState<'income' | 'expense'>(defaultValues?.type ?? 'expense')
+  const [customCats, setCustomCats] = useState<string[]>(userCategories)
+  const [addingCat, setAddingCat] = useState(false)
+  const [newCatName, setNewCatName] = useState('')
+  const [, startTransition] = useTransition()
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -23,7 +30,33 @@ export function TransactionForm({ defaultValues, onSubmit, onCancel }: Props) {
     setLoading(false)
   }
 
-  const today = new Date().toLocaleDateString('en-CA') // YYYY-MM-DD no fuso local
+  function handleAddCatClick() {
+    setAddingCat(true)
+    setNewCatName('')
+  }
+
+  function handleCancelCat() {
+    setAddingCat(false)
+    setNewCatName('')
+  }
+
+  function handleSaveCat() {
+    const name = newCatName.trim()
+    if (!name) return
+    startTransition(async () => {
+      const result = await createUserCategory(name)
+      if (result.error) {
+        toast.error(result.error)
+      } else {
+        setCustomCats(prev => [...prev, name])
+        setAddingCat(false)
+        setNewCatName('')
+        toast.success(`Categoria "${name}" criada!`)
+      }
+    })
+  }
+
+  const today = new Date().toLocaleDateString('en-CA')
 
   const inputClass = "w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-[#0f172a] text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
 
@@ -92,18 +125,72 @@ export function TransactionForm({ defaultValues, onSubmit, onCancel }: Props) {
 
       {/* Category */}
       <div className="space-y-1.5">
-        <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Categoria</label>
-        <select
-          name="category"
-          required
-          defaultValue={defaultValues?.category ?? ''}
-          className={inputClass}
-        >
-          <option value="" disabled>Selecione uma categoria</option>
-          {CATEGORIES.map(c => (
-            <option key={c} value={c}>{c}</option>
-          ))}
-        </select>
+        <div className="flex items-center justify-between">
+          <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Categoria</label>
+          {!addingCat && (
+            <button
+              type="button"
+              onClick={handleAddCatClick}
+              className="flex items-center gap-1 text-xs text-blue-500 hover:text-blue-600 font-medium transition-colors"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              Nova categoria
+            </button>
+          )}
+        </div>
+
+        {addingCat ? (
+          <div className="flex gap-2">
+            <input
+              autoFocus
+              value={newCatName}
+              onChange={e => setNewCatName(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === 'Enter') { e.preventDefault(); handleSaveCat() }
+                if (e.key === 'Escape') handleCancelCat()
+              }}
+              placeholder="Nome da categoria..."
+              maxLength={30}
+              className={inputClass}
+            />
+            <button
+              type="button"
+              onClick={handleSaveCat}
+              disabled={!newCatName.trim()}
+              className="px-3 py-2.5 rounded-xl bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold disabled:opacity-40 transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+            </button>
+            <button
+              type="button"
+              onClick={handleCancelCat}
+              className="px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        ) : (
+          <select
+            name="category"
+            required
+            defaultValue={defaultValues?.category ?? ''}
+            className={inputClass}
+          >
+            <option value="" disabled>Selecione uma categoria</option>
+            <optgroup label="Padrão">
+              {CATEGORIES.map(c => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </optgroup>
+            {customCats.length > 0 && (
+              <optgroup label="Minhas categorias">
+                {customCats.map(c => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </optgroup>
+            )}
+          </select>
+        )}
       </div>
 
       {/* Actions */}

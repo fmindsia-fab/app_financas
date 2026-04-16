@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { TransactionsClient } from '@/components/transactions-client'
+import { getUserCategories } from '@/lib/actions/categories'
 import type { Transaction } from '@/lib/types'
 
 interface Props {
@@ -34,7 +35,7 @@ export default async function TransacoesPage({ searchParams }: Props) {
     query = query.ilike('description', `%${params.q}%`)
   }
 
-  const { data } = await query
+  const [{ data }, userCategories] = await Promise.all([query, getUserCategories()])
   const transactions: Transaction[] = data ?? []
 
   return (
@@ -52,6 +53,7 @@ export default async function TransacoesPage({ searchParams }: Props) {
         currentAno={ano}
         currentCategoria={params.categoria ?? 'all'}
         currentQ={params.q ?? ''}
+        userCategories={userCategories}
       />
     </div>
   )

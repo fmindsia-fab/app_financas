@@ -17,6 +17,29 @@ CREATE TABLE IF NOT EXISTS public.transactions (
   settled     boolean NOT NULL DEFAULT false
 );
 
+-- Categorias personalizadas por usuário
+CREATE TABLE IF NOT EXISTS public.user_categories (
+  id         uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id    uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  name       text NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (user_id, name)
+);
+
+ALTER TABLE public.user_categories ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view own categories"
+  ON public.user_categories FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own categories"
+  ON public.user_categories FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own categories"
+  ON public.user_categories FOR DELETE
+  USING (auth.uid() = user_id);
+
 -- Índices para performance
 CREATE INDEX IF NOT EXISTS transactions_user_id_idx ON public.transactions (user_id);
 CREATE INDEX IF NOT EXISTS transactions_date_idx ON public.transactions (date DESC);

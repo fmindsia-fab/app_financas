@@ -18,6 +18,7 @@ interface Props {
   currentAno: number
   currentCategoria: string
   currentQ: string
+  userCategories: string[]
 }
 
 const categoryEmoji: Record<string, string> = {
@@ -30,7 +31,7 @@ const YEARS = [2023, 2024, 2025, 2026, 2027]
 
 const selectClass = "px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-[#1e293b] text-sm text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
 
-export function TransactionsClient({ transactions, currentMes, currentAno, currentCategoria, currentQ }: Props) {
+export function TransactionsClient({ transactions, currentMes, currentAno, currentCategoria, currentQ, userCategories }: Props) {
   const router = useRouter()
 
   const [openCreate, setOpenCreate] = useState(false)
@@ -101,7 +102,14 @@ export function TransactionsClient({ transactions, currentMes, currentAno, curre
 
           <select value={currentCategoria} onChange={e => updateParams({ categoria: e.target.value })} className={selectClass}>
             <option value="all">Todas as categorias</option>
-            {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+            <optgroup label="Padrão">
+              {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+            </optgroup>
+            {userCategories.length > 0 && (
+              <optgroup label="Minhas categorias">
+                {userCategories.map(c => <option key={c} value={c}>{c}</option>)}
+              </optgroup>
+            )}
           </select>
 
           <div className="relative flex-1 min-w-[180px]">
@@ -127,7 +135,7 @@ export function TransactionsClient({ transactions, currentMes, currentAno, curre
                 <SheetTitle>Nova Transação</SheetTitle>
               </SheetHeader>
               <div className="mt-6">
-                <TransactionForm onSubmit={handleCreate} onCancel={() => setOpenCreate(false)} />
+                <TransactionForm userCategories={userCategories} onSubmit={handleCreate} onCancel={() => setOpenCreate(false)} />
               </div>
             </SheetContent>
           </Sheet>
@@ -229,6 +237,7 @@ export function TransactionsClient({ transactions, currentMes, currentAno, curre
                               {editTx && (
                                 <TransactionForm
                                   defaultValues={editTx}
+                                  userCategories={userCategories}
                                   onSubmit={handleUpdate}
                                   onCancel={() => setEditTx(null)}
                                 />
