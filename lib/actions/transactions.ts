@@ -72,6 +72,25 @@ export async function updateTransaction(id: string, formData: FormData) {
   return { success: true }
 }
 
+export async function toggleSettled(id: string, settled: boolean) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Não autenticado' }
+
+  const { error } = await supabase
+    .from('transactions')
+    .update({ settled })
+    .eq('id', id)
+    .eq('user_id', user.id)
+
+  if (error) return { error: 'Erro ao atualizar status' }
+
+  revalidatePath('/dashboard')
+  revalidatePath('/transacoes')
+  revalidatePath('/relatorios')
+  return { success: true }
+}
+
 export async function deleteTransaction(id: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()

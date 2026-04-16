@@ -23,6 +23,7 @@ export interface Transaction {
   type: TransactionType
   category: Category
   created_at: string
+  settled: boolean
 }
 
 export interface MonthlySummary {

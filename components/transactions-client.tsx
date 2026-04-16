@@ -1,13 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { Plus, Search, Pencil, Trash2, ArrowUpRight, ArrowDownRight } from 'lucide-react'
+import { Plus, Search, Pencil, Trash2, ArrowUpRight, ArrowDownRight, CheckCircle2, Circle } from 'lucide-react'
 import { toast } from 'sonner'
 import type { Transaction } from '@/lib/types'
 import { CATEGORIES } from '@/lib/types'
 import { formatCurrency, formatDate, MONTH_NAMES } from '@/lib/utils'
-import { createTransaction, updateTransaction, deleteTransaction } from '@/lib/actions/transactions'
+import { createTransaction, updateTransaction, deleteTransaction, toggleSettled } from '@/lib/actions/transactions'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { TransactionForm } from '@/components/transaction-form'
@@ -36,6 +36,22 @@ export function TransactionsClient({ transactions, currentMes, currentAno, curre
   const [openCreate, setOpenCreate] = useState(false)
   const [editTx, setEditTx] = useState<Transaction | null>(null)
   const [q, setQ] = useState(currentQ)
+  const [settledMap, setSettledMap] = useState<Record<string, boolean>>(
+    () => Object.fromEntries(transactions.map(t => [t.id, t.settled]))
+  )
+  const [, startTransition] = useTransition()
+
+  async function handleToggleSettled(t: Transaction) {
+    const newValue = !settledMap[t.id]
+    setSettledMap(prev => ({ ...prev, [t.id]: newValue }))
+    startTransition(async () => {
+      const result = await toggleSettled(t.id, newValue)
+      if (result.error) {
+        setSettledMap(prev => ({ ...prev, [t.id]: !newValue }))
+        toast.error(result.error)
+      }
+    })
+  }
 
   function updateParams(updates: Record<string, string>) {
     const params = new URLSearchParams()
@@ -137,6 +153,7 @@ export function TransactionsClient({ transactions, currentMes, currentAno, curre
                   <th className="text-left px-4 py-3 text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider hidden sm:table-cell">Categoria</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider hidden md:table-cell">Data</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Tipo</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider hidden sm:table-cell">Status</th>
                   <th className="text-right px-4 py-3 text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Valor</th>
                   <th className="px-4 py-3" />
                 </tr>
@@ -164,7 +181,33 @@ export function TransactionsClient({ transactions, currentMes, currentAno, curre
                         {t.type === 'income' ? 'Receita' : 'Despesa'}
                       </span>
                     </td>
-                    <td className={`px-4 py-3 text-right font-semibold ${t.type === 'income' ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'}`}>
+                    <td className="px-4 py-3 hidden sm:table-cell">
+                      <button
+                        onClick={() => handleToggleSettled(t)}
+                        title={settledMap[t.id]
+                          ? (t.type === 'income' ? 'Marcar como não recebido' : 'Marcar como não pago')
+                          : (t.type === 'income' ? 'Marcar como recebido' : 'Marcar como pago')}
+                        className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full border transition-colors ${
+                          settledMap[t.id]
+                            ? t.type === 'income'
+                              ? 'bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-400'
+                              : 'bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-400'
+                            : 'bg-slate-50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 text-slate-400 dark:text-slate-500 hover:border-emerald-300 hover:text-emerald-600'
+                        }`}
+                      >
+                        {settledMap[t.id]
+                          ? <CheckCircle2 className="w-3.5 h-3.5" />
+                          : <Circle className="w-3.5 h-3.5" />}
+                        {settledMap[t.id]
+                          ? (t.type === 'income' ? 'Recebido' : 'Pago')
+                          : (t.type === 'income' ? 'A receber' : 'A pagar')}
+                      </button>
+                    </td>
+                    <td className={`px-4 py-3 text-right font-semibold transition-opacity ${
+                      settledMap[t.id]
+                        ? t.type === 'income' ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'
+                        : 'text-slate-400 dark:text-slate-500 opacity-50'
+                    }`}>
                       {t.type === 'income' ? '+' : '-'}{formatCurrency(t.amount)}
                     </td>
                     <td className="px-4 py-3">

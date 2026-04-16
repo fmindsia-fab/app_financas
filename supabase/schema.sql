@@ -13,7 +13,8 @@ CREATE TABLE IF NOT EXISTS public.transactions (
     'Alimentação', 'Transporte', 'Moradia', 'Lazer', 'Saúde',
     'Educação', 'Salário', 'Freelance', 'Outros'
   )),
-  created_at  timestamptz NOT NULL DEFAULT now()
+  created_at  timestamptz NOT NULL DEFAULT now(),
+  settled     boolean NOT NULL DEFAULT false
 );
 
 -- Índices para performance

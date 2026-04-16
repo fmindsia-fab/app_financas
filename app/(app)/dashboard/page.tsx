@@ -32,8 +32,8 @@ export default async function DashboardPage() {
   const transactions: Transaction[] = monthlyTx ?? []
   const recent: Transaction[] = recentTx ?? []
 
-  const totalIncome = transactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0)
-  const totalExpense = transactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0)
+  const totalIncome = transactions.filter(t => t.type === 'income' && t.settled).reduce((s, t) => s + t.amount, 0)
+  const totalExpense = transactions.filter(t => t.type === 'expense' && t.settled).reduce((s, t) => s + t.amount, 0)
   const balance = totalIncome - totalExpense
 
   const monthName = now.toLocaleString('pt-BR', { month: 'long', year: 'numeric' })
