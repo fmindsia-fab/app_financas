@@ -9,10 +9,7 @@ CREATE TABLE IF NOT EXISTS public.transactions (
   amount      numeric(12, 2) NOT NULL CHECK (amount > 0),
   date        date NOT NULL,
   type        text NOT NULL CHECK (type IN ('income', 'expense')),
-  category    text NOT NULL CHECK (category IN (
-    'Alimentação', 'Transporte', 'Moradia', 'Lazer', 'Saúde',
-    'Educação', 'Salário', 'Freelance', 'Outros'
-  )),
+  category    text NOT NULL,
   created_at  timestamptz NOT NULL DEFAULT now(),
   settled     boolean NOT NULL DEFAULT false
 );
