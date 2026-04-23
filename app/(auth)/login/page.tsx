@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { Eye, EyeOff, Loader2 } from 'lucide-react'
 import { login } from '@/lib/actions/auth'
 import { AppLogo } from '@/components/app-logo'

@@ -45,7 +45,8 @@
       "Bash(pnpm add:*)",
       "Bash(pnpm setup:*)",
       "Bash(PNPM_HOME=\"C:/Users/fabio/AppData/Local/pnpm\" pnpm add -g vercel)",
-      "Bash(vercel login:*)"
+      "Bash(vercel login:*)",
+      "Bash(git push *)"
     ]
   }
 }
