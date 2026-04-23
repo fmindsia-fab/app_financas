@@ -2,8 +2,9 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { TrendingUp, Eye, EyeOff, Loader2, MailCheck, ArrowRight, AlertCircle } from 'lucide-react'
+import { Eye, EyeOff, Loader2, MailCheck, ArrowRight, AlertCircle } from 'lucide-react'
 import { register } from '@/lib/actions/auth'
+import { AppLogo } from '@/components/app-logo'
 
 export default function CadastroPage() {
   const [showPassword, setShowPassword] = useState(false)
@@ -52,14 +53,9 @@ export default function CadastroPage() {
         </div>
 
         <div className="w-full max-w-md relative z-10 animate-scale-in text-center">
-          <Link href="/" className="inline-flex items-center gap-2 mb-8 justify-center">
-            <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-blue-500 rounded-xl flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-white font-bold text-xl" style={{ fontFamily: 'Bricolage Grotesque, sans-serif' }}>
-              Finanças
-            </span>
-          </Link>
+          <div className="flex justify-center mb-8">
+            <AppLogo size="lg" />
+          </div>
 
           <div className="bg-[#1e293b] border border-white/10 rounded-2xl p-8">
             <div className="w-16 h-16 bg-emerald-500/15 rounded-full flex items-center justify-center mx-auto mb-5">
@@ -112,14 +108,9 @@ export default function CadastroPage() {
 
       <div className="w-full max-w-md relative z-10 animate-scale-in">
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2 mb-6">
-            <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-blue-500 rounded-xl flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-white font-bold text-xl" style={{ fontFamily: 'Bricolage Grotesque, sans-serif' }}>
-              Finanças
-            </span>
-          </Link>
+          <div className="flex justify-center mb-6">
+            <AppLogo size="lg" />
+          </div>
           <h1 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'Bricolage Grotesque, sans-serif' }}>
             Criar conta grátis
           </h1>

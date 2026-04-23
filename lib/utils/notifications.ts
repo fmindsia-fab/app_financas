@@ -7,16 +7,16 @@ export function generateNotifications(transactions: Transaction[]): Notification
   const currentYear = now.getFullYear()
 
   const currentMonthTx = transactions.filter((t) => {
-    const d = new Date(t.date)
-    return d.getMonth() === currentMonth && d.getFullYear() === currentYear
+    const [y, m] = t.date.split('-').map(Number)
+    return m - 1 === currentMonth && y === currentYear
   })
 
   const totalIncome = currentMonthTx
-    .filter((t) => t.type === 'income')
+    .filter((t) => t.type === 'income' && t.settled)
     .reduce((s, t) => s + t.amount, 0)
 
   const totalExpense = currentMonthTx
-    .filter((t) => t.type === 'expense')
+    .filter((t) => t.type === 'expense' && t.settled)
     .reduce((s, t) => s + t.amount, 0)
 
   const balance = totalIncome - totalExpense

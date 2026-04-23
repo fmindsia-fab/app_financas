@@ -1,29 +1,23 @@
 import Link from 'next/link'
 import { BarChart3, Tags, Download, TrendingUp, Shield, Zap } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { AppLogo } from '@/components/app-logo'
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0f172a] flex flex-col">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col">
       {/* Navbar */}
-      <nav className="bg-white dark:bg-[#0f172a] sticky top-0 z-50 border-b border-slate-200 dark:border-white/5 shadow-sm dark:shadow-none">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-blue-500 rounded-lg flex items-center justify-center">
-              <TrendingUp className="w-4 h-4 text-white" />
-            </div>
-            <span className="text-slate-900 dark:text-white font-bold text-lg" style={{ fontFamily: 'Bricolage Grotesque, sans-serif' }}>
-              Finanças
-            </span>
-          </div>
+      <nav className="sticky top-0 z-50 bg-white/85 dark:bg-slate-950/95 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-800/70 shadow-soft">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+          <AppLogo size="md" />
           <div className="flex items-center gap-2">
             <ThemeToggle />
-            <Link href="/login" className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm font-medium transition-colors px-2">
+            <Link href="/login" className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white text-sm font-medium transition-colors px-2">
               Entrar
             </Link>
             <Link
               href="/cadastro"
-              className="bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
+              className="bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-600 hover:to-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-2xl transition-all shadow-lg shadow-blue-500/20"
             >
               Cadastrar
             </Link>
@@ -32,7 +26,7 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero */}
-      <section className="bg-slate-50 dark:bg-[#0f172a] pt-24 pb-32 px-4 sm:px-6 relative overflow-hidden">
+      <section className="bg-slate-50 dark:bg-slate-950 pt-24 pb-32 px-4 sm:px-6 relative overflow-hidden">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-40 -right-40 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" />
           <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl" />
@@ -48,9 +42,9 @@ export default function LandingPage() {
             className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 dark:text-white leading-tight mb-6 animate-fade-up delay-100"
             style={{ fontFamily: 'Bricolage Grotesque, sans-serif' }}
           >
-            Suas finanças,{' '}
+            Seu dinheiro,{' '}
             <span className="bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">
-              sob controle
+              em fluxo
             </span>
           </h1>
 
@@ -75,7 +69,7 @@ export default function LandingPage() {
 
           {/* Dashboard preview mockup */}
           <div className="mt-16 animate-fade-up delay-400">
-            <div className="bg-white dark:bg-[#1e293b] border border-slate-200 dark:border-white/10 rounded-2xl p-4 max-w-2xl mx-auto shadow-xl dark:shadow-2xl dark:shadow-black/40">
+              <div className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-[28px] p-5 max-w-2xl mx-auto shadow-soft">
               <div className="flex items-center gap-2 mb-4 opacity-40">
                 <div className="w-3 h-3 rounded-full bg-red-500" />
                 <div className="w-3 h-3 rounded-full bg-yellow-500" />
@@ -183,7 +177,7 @@ export default function LandingPage() {
             className="text-3xl sm:text-4xl font-bold text-white mb-4"
             style={{ fontFamily: 'Bricolage Grotesque, sans-serif' }}
           >
-            Comece a controlar suas finanças hoje
+            Comece a controlar seu dinheiro hoje
           </h2>
           <p className="text-slate-400 mb-8">Gratuito, seguro e sem cartão de crédito.</p>
           <Link
@@ -198,12 +192,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="bg-[#0f172a] border-t border-white/5 py-6 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-gradient-to-br from-emerald-400 to-blue-500 rounded-md flex items-center justify-center">
-              <TrendingUp className="w-3 h-3 text-white" />
-            </div>
-            <span className="text-slate-400 text-sm">Finanças Pessoais</span>
-          </div>
+          <AppLogo size="sm" className="opacity-70" />
           <span className="text-slate-600 text-xs">© 2026</span>
         </div>
       </footer>

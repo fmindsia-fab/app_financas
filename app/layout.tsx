@@ -4,7 +4,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { Providers } from '@/components/providers'
 
 export const metadata: Metadata = {
-  title: 'Finanças Pessoais',
+  title: 'Fluxo360 — by FMinds',
   description: 'Controle suas receitas, despesas e saldo em um só lugar.',
 }
 

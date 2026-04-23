@@ -25,9 +25,12 @@ export function TransactionForm({ defaultValues, userCategories = [], onSubmit, 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setLoading(true)
-    const formData = new FormData(e.currentTarget)
-    await onSubmit(formData)
-    setLoading(false)
+    try {
+      const formData = new FormData(e.currentTarget)
+      await onSubmit(formData)
+    } finally {
+      setLoading(false)
+    }
   }
 
   function handleAddCatClick() {
@@ -58,23 +61,23 @@ export function TransactionForm({ defaultValues, userCategories = [], onSubmit, 
 
   const today = new Date().toLocaleDateString('en-CA')
 
-  const inputClass = "w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-[#0f172a] text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+  const inputClass = "w-full px-3 py-3 rounded-2xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form onSubmit={handleSubmit} className="space-y-6">
       {/* Type toggle */}
-      <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 dark:bg-slate-700/50 rounded-xl">
+      <div className="rounded-2xl bg-slate-100 dark:bg-slate-800 p-1 grid grid-cols-2 gap-1 shadow-sm">
         {(['expense', 'income'] as const).map((t) => (
           <button
             key={t}
             type="button"
             onClick={() => setType(t)}
-            className={`py-2.5 rounded-lg text-sm font-semibold transition-all ${
+            className={`py-3 rounded-2xl text-sm font-semibold transition-all ${
               type === t
                 ? t === 'expense'
-                  ? 'bg-red-500 text-white shadow-sm'
-                  : 'bg-emerald-500 text-white shadow-sm'
-                : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+                  ? 'bg-red-500 text-white shadow-md'
+                  : 'bg-emerald-500 text-white shadow-md'
+                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             {t === 'expense' ? '💸 Despesa' : '💰 Receita'}
@@ -84,7 +87,7 @@ export function TransactionForm({ defaultValues, userCategories = [], onSubmit, 
       <input type="hidden" name="type" value={type} />
 
       {/* Description */}
-      <div className="space-y-1.5">
+      <div className="space-y-2">
         <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Descrição</label>
         <input
           name="description"
@@ -94,10 +97,11 @@ export function TransactionForm({ defaultValues, userCategories = [], onSubmit, 
           placeholder="Ex: Mercado, Salário, Netflix..."
           className={inputClass}
         />
+        <p className="text-xs text-slate-500 dark:text-slate-400">Use uma descrição clara para encontrar o lançamento mais rápido.</p>
       </div>
 
       {/* Amount */}
-      <div className="space-y-1.5">
+      <div className="space-y-2">
         <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Valor (R$)</label>
         <input
           name="amount"
@@ -112,7 +116,7 @@ export function TransactionForm({ defaultValues, userCategories = [], onSubmit, 
       </div>
 
       {/* Date */}
-      <div className="space-y-1.5">
+      <div className="space-y-2">
         <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Data</label>
         <input
           name="date"
@@ -124,23 +128,23 @@ export function TransactionForm({ defaultValues, userCategories = [], onSubmit, 
       </div>
 
       {/* Category */}
-      <div className="space-y-1.5">
-        <div className="flex items-center justify-between">
+      <div className="space-y-2">
+        <div className="flex items-center justify-between gap-4">
           <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Categoria</label>
           {!addingCat && (
             <button
               type="button"
               onClick={handleAddCatClick}
-              className="flex items-center gap-1 text-xs text-blue-500 hover:text-blue-600 font-medium transition-colors"
+              className="flex items-center gap-1 text-xs text-blue-500 hover:text-blue-600 font-semibold transition-colors"
             >
-              <Plus className="w-3.5 h-3.5" />
+              <Plus className="w-4 h-4" />
               Nova categoria
             </button>
           )}
         </div>
 
         {addingCat ? (
-          <div className="flex gap-2">
+          <div className="grid gap-2 sm:grid-cols-[1fr_auto_auto]">
             <input
               autoFocus
               value={newCatName}
@@ -157,14 +161,14 @@ export function TransactionForm({ defaultValues, userCategories = [], onSubmit, 
               type="button"
               onClick={handleSaveCat}
               disabled={!newCatName.trim()}
-              className="px-3 py-2.5 rounded-xl bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold disabled:opacity-40 transition-colors"
+              className="px-4 py-3 rounded-2xl bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold disabled:opacity-40 transition-colors"
             >
               <Plus className="w-4 h-4" />
             </button>
             <button
               type="button"
               onClick={handleCancelCat}
-              className="px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition-colors"
+              className="px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
@@ -194,18 +198,18 @@ export function TransactionForm({ defaultValues, userCategories = [], onSubmit, 
       </div>
 
       {/* Actions */}
-      <div className="flex gap-3 pt-2">
+      <div className="flex flex-col gap-3 sm:flex-row pt-2">
         <button
           type="button"
           onClick={onCancel}
-          className="flex-1 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
+          className="w-full sm:flex-1 py-3 rounded-2xl border border-slate-200 dark:border-slate-600 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
         >
           Cancelar
         </button>
         <button
           type="submit"
-          disabled={loading}
-          className={`flex-1 py-2.5 rounded-xl text-sm font-semibold text-white transition-all flex items-center justify-center gap-2 ${
+          disabled={loading || addingCat}
+          className={`w-full sm:flex-1 py-3 rounded-2xl text-sm font-semibold text-white transition-all flex items-center justify-center gap-2 ${
             type === 'expense'
               ? 'bg-red-500 hover:bg-red-600'
               : 'bg-emerald-500 hover:bg-emerald-600'

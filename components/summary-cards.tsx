@@ -39,26 +39,35 @@ export function SummaryCards({ totalIncome, totalExpense, balance }: Props) {
   ]
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
       {cards.map((card) => (
         <div
           key={card.label}
-          className={`bg-white dark:bg-[#1e293b] rounded-2xl border border-slate-100 dark:border-slate-700/50 p-6 shadow-sm animate-fade-up ${card.delay} hover:shadow-md transition-shadow`}
+          className={`bg-white dark:bg-slate-950 rounded-[28px] border border-slate-100 dark:border-slate-800 p-6 shadow-soft animate-fade-up ${card.delay} hover:-translate-y-0.5 transition-all`}
         >
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-slate-500 dark:text-slate-400 text-sm font-medium">{card.label}</span>
-            <div className={`w-10 h-10 ${card.bg} rounded-xl flex items-center justify-center`}>
+          <div className="flex items-center justify-between mb-4 gap-3">
+            <div>
+              <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">{card.label}</p>
+              <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
+                {card.label === 'Saldo'
+                  ? 'Saldo atual do mês'
+                  : card.label === 'Receitas'
+                    ? 'Entradas confirmadas'
+                    : 'Saídas confirmadas'}
+              </p>
+            </div>
+            <div className={`w-12 h-12 ${card.bg} rounded-3xl flex items-center justify-center shadow-sm`}>
               <card.icon className={`w-5 h-5 ${card.iconColor}`} />
             </div>
           </div>
           <div
-            className={`text-2xl font-bold bg-gradient-to-r ${card.gradient} bg-clip-text text-transparent`}
+            className={`text-3xl sm:text-4xl font-semibold bg-clip-text text-transparent bg-gradient-to-r ${card.gradient}`}
             style={{ fontFamily: 'Bricolage Grotesque, sans-serif' }}
           >
             {formatCurrency(card.value)}
           </div>
-          <div className="mt-2 h-1 rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden">
-            <div className={`h-full rounded-full bg-gradient-to-r ${card.gradient} opacity-60`} style={{ width: '100%' }} />
+          <div className="mt-4 h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+            <div className={`h-full rounded-full bg-gradient-to-r ${card.gradient} opacity-80`} style={{ width: '100%' }} />
           </div>
         </div>
       ))}

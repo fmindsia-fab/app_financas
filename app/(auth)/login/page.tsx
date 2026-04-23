@@ -1,20 +1,38 @@
 'use client'
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { TrendingUp, Eye, EyeOff, Loader2 } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Eye, EyeOff, Loader2 } from 'lucide-react'
 import { login } from '@/lib/actions/auth'
+import { AppLogo } from '@/components/app-logo'
+
+const STORAGE_KEY = 'financas_remembered_email'
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [rememberMe, setRememberMe] = useState(false)
+  const [savedEmail, setSavedEmail] = useState('')
+
+  useEffect(() => {
+    const email = localStorage.getItem(STORAGE_KEY)
+    if (email) {
+      setSavedEmail(email)
+      setRememberMe(true)
+    }
+  }, [])
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setLoading(true)
     setError(null)
     const formData = new FormData(e.currentTarget)
+    const email = formData.get('email') as string
+    if (rememberMe) {
+      localStorage.setItem(STORAGE_KEY, email)
+    } else {
+      localStorage.removeItem(STORAGE_KEY)
+    }
     const result = await login(formData)
     if (result?.error) {
       setError('E-mail ou senha incorretos.')
@@ -32,14 +50,9 @@ export default function LoginPage() {
       <div className="w-full max-w-md relative z-10 animate-scale-in">
         {/* Logo */}
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2 mb-6">
-            <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-blue-500 rounded-xl flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-white font-bold text-xl" style={{ fontFamily: 'Bricolage Grotesque, sans-serif' }}>
-              Finanças
-            </span>
-          </Link>
+          <div className="flex justify-center mb-6">
+            <AppLogo size="lg" />
+          </div>
           <h1
             className="text-2xl font-bold text-white mb-2"
             style={{ fontFamily: 'Bricolage Grotesque, sans-serif' }}
@@ -58,13 +71,20 @@ export default function LoginPage() {
                 name="email"
                 type="email"
                 required
+                defaultValue={savedEmail}
+                key={savedEmail}
                 placeholder="seu@email.com"
                 className="w-full bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-slate-300 text-sm font-medium">Senha</label>
+              <div className="flex items-center justify-between">
+                <label className="text-slate-300 text-sm font-medium">Senha</label>
+                <Link href="/esqueci-senha" className="text-xs text-slate-400 hover:text-blue-400 transition-colors">
+                  Esqueceu a senha?
+                </Link>
+              </div>
               <div className="relative">
                 <input
                   name="password"
@@ -81,6 +101,19 @@ export default function LoginPage() {
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <input
+                id="remember-me"
+                type="checkbox"
+                checked={rememberMe}
+                onChange={e => setRememberMe(e.target.checked)}
+                className="w-4 h-4 rounded border-white/20 bg-[#0f172a] accent-blue-500 cursor-pointer"
+              />
+              <label htmlFor="remember-me" className="text-slate-400 text-sm cursor-pointer select-none">
+                Lembrar e-mail
+              </label>
             </div>
 
             {error && (
