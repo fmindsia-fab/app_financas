@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { TrendingUp, TrendingDown, Wallet } from 'lucide-react'
 import { formatCurrency } from '@/lib/utils'
 
@@ -17,6 +18,7 @@ export function SummaryCards({ totalIncome, totalExpense, balance }: Props) {
       bg: 'bg-emerald-50 dark:bg-emerald-500/10',
       iconColor: 'text-emerald-600 dark:text-emerald-400',
       delay: 'delay-100',
+      href: '/transacoes?tipo=income',
     },
     {
       label: 'Despesas',
@@ -26,6 +28,7 @@ export function SummaryCards({ totalIncome, totalExpense, balance }: Props) {
       bg: 'bg-red-50 dark:bg-red-500/10',
       iconColor: 'text-red-500 dark:text-red-400',
       delay: 'delay-200',
+      href: '/transacoes?tipo=expense',
     },
     {
       label: 'Saldo',
@@ -35,15 +38,17 @@ export function SummaryCards({ totalIncome, totalExpense, balance }: Props) {
       bg: balance >= 0 ? 'bg-blue-50 dark:bg-blue-500/10' : 'bg-red-50 dark:bg-red-500/10',
       iconColor: balance >= 0 ? 'text-blue-600 dark:text-blue-400' : 'text-red-500 dark:text-red-400',
       delay: 'delay-300',
+      href: '/transacoes',
     },
   ]
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
       {cards.map((card) => (
-        <div
+        <Link
           key={card.label}
-          className={`bg-white dark:bg-slate-950 rounded-[28px] border border-slate-100 dark:border-slate-800 p-6 shadow-soft animate-fade-up ${card.delay} hover:-translate-y-0.5 transition-all`}
+          href={card.href}
+          className={`bg-white dark:bg-slate-950 rounded-[28px] border border-slate-100 dark:border-slate-800 p-6 shadow-soft animate-fade-up ${card.delay} hover:-translate-y-0.5 transition-all block`}
         >
           <div className="flex items-center justify-between mb-4 gap-3">
             <div>
@@ -69,7 +74,7 @@ export function SummaryCards({ totalIncome, totalExpense, balance }: Props) {
           <div className="mt-4 h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
             <div className={`h-full rounded-full bg-gradient-to-r ${card.gradient} opacity-80`} style={{ width: '100%' }} />
           </div>
-        </div>
+        </Link>
       ))}
     </div>
   )

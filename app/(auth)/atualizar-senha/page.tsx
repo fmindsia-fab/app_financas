@@ -1,46 +1,90 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Eye, EyeOff, Loader2, CheckCircle2 } from 'lucide-react'
-import { updatePassword } from '@/lib/actions/auth'
-import { AppLogo } from '@/components/app-logo'
+import { createClient } from '@/lib/supabase/client'
+import { UpdatePasswordForm } from '@/components/update-password-form'
+import { Loader2, AlertTriangle, ArrowLeft } from 'lucide-react'
+import Link from 'next/link'
 
 export default function AtualizarSenhaPage() {
   const router = useRouter()
-  const [showPassword, setShowPassword] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [validSession, setValidSession] = useState(false)
+  const [email, setEmail] = useState('')
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    setError(null)
-    const formData = new FormData(e.currentTarget)
-    const password = formData.get('password') as string
-    const confirm = formData.get('confirm') as string
+  useEffect(() => {
+    async function checkSession() {
+      const supabase = createClient()
 
-    if (password !== confirm) {
-      setError('As senhas não coincidem.')
-      return
-    }
-    if (password.length < 6) {
-      setError('A senha deve ter pelo menos 6 caracteres.')
-      return
-    }
+      // O cliente do browser detecta automaticamente o hash da URL (#access_token=...)
+      const { data: { session }, error } = await supabase.auth.getSession()
 
-    setLoading(true)
-    try {
-      const result = await updatePassword(formData)
-      if (result?.error) {
-        setError('Não foi possível atualizar a senha. O link pode ter expirado.')
+      if (error || !session) {
+        setValidSession(false)
+        setLoading(false)
         return
       }
-      setSuccess(true)
-      setTimeout(() => router.push('/dashboard'), 2000)
-    } finally {
+
+      setEmail(session.user.email ?? '')
+      setValidSession(true)
       setLoading(false)
     }
+
+    checkSession()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#0f172a] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-blue-400 animate-spin" />
+      </div>
+    )
+  }
+
+  if (!validSession) {
+    return (
+      <div className="min-h-screen bg-[#0f172a] flex items-center justify-center px-4">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-40 -right-40 w-96 h-96 bg-red-500/10 rounded-full blur-3xl" />
+          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl" />
+        </div>
+        <div className="w-full max-w-md relative z-10 animate-scale-in text-center">
+          <div className="flex justify-center mb-8">
+            <div className="flex items-center gap-2">
+              <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-blue-500 rounded-2xl flex items-center justify-center">
+                <span className="text-white font-bold text-lg" style={{ fontFamily: 'Bricolage Grotesque, sans-serif' }}>F</span>
+              </div>
+              <span className="text-white font-bold text-2xl" style={{ fontFamily: 'Bricolage Grotesque, sans-serif' }}>Fluxo360</span>
+            </div>
+          </div>
+          <div className="bg-[#1e293b] border border-white/10 rounded-2xl p-8">
+            <div className="w-16 h-16 bg-red-500/15 rounded-full flex items-center justify-center mx-auto mb-5">
+              <AlertTriangle className="w-8 h-8 text-red-400" />
+            </div>
+            <h1 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'Bricolage Grotesque, sans-serif' }}>
+              Link inválido
+            </h1>
+            <p className="text-slate-400 text-sm mb-6">
+              Este link de recuperação expirou ou já foi usado. Solicite um novo link abaixo.
+            </p>
+            <Link
+              href="/esqueci-senha"
+              className="w-full bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-600 hover:to-blue-600 text-white font-semibold py-3 rounded-xl transition-all block"
+            >
+              Solicitar novo link
+            </Link>
+            <Link
+              href="/login"
+              className="flex items-center justify-center gap-2 mt-4 text-slate-400 hover:text-slate-300 text-sm transition-colors"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              Voltar ao login
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -53,72 +97,21 @@ export default function AtualizarSenhaPage() {
       <div className="w-full max-w-md relative z-10 animate-scale-in">
         <div className="text-center mb-8">
           <div className="flex justify-center mb-6">
-            <AppLogo size="lg" />
+            <div className="flex items-center gap-2">
+              <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-blue-500 rounded-2xl flex items-center justify-center">
+                <span className="text-white font-bold text-lg" style={{ fontFamily: 'Bricolage Grotesque, sans-serif' }}>F</span>
+              </div>
+              <span className="text-white font-bold text-2xl" style={{ fontFamily: 'Bricolage Grotesque, sans-serif' }}>Fluxo360</span>
+            </div>
           </div>
           <h1 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'Bricolage Grotesque, sans-serif' }}>
-            Nova senha
+            Criar nova senha
           </h1>
-          <p className="text-slate-400 text-sm">Escolha uma nova senha para sua conta</p>
+          <p className="text-slate-400 text-sm">Olá, {email}. Escolha uma nova senha para sua conta.</p>
         </div>
 
         <div className="bg-[#1e293b] border border-white/10 rounded-2xl p-8">
-          {success ? (
-            <div className="text-center py-4">
-              <div className="w-16 h-16 bg-emerald-500/15 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CheckCircle2 className="w-8 h-8 text-emerald-400" />
-              </div>
-              <h2 className="text-white font-semibold text-lg mb-2">Senha atualizada!</h2>
-              <p className="text-slate-400 text-sm">Redirecionando para o dashboard...</p>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div className="space-y-1.5">
-                <label className="text-slate-300 text-sm font-medium">Nova senha</label>
-                <div className="relative">
-                  <input
-                    name="password"
-                    type={showPassword ? 'text' : 'password'}
-                    required
-                    placeholder="Mínimo 6 caracteres"
-                    className="w-full bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 pr-11 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300 transition-colors"
-                  >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-slate-300 text-sm font-medium">Confirmar nova senha</label>
-                <input
-                  name="confirm"
-                  type={showPassword ? 'text' : 'password'}
-                  required
-                  placeholder="Repita a nova senha"
-                  className="w-full bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
-                />
-              </div>
-
-              {error && (
-                <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3">
-                  <p className="text-red-400 text-sm">{error}</p>
-                </div>
-              )}
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-600 hover:to-blue-600 disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition-all flex items-center justify-center gap-2"
-              >
-                {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-                {loading ? 'Salvando...' : 'Salvar nova senha'}
-              </button>
-            </form>
-          )}
+          <UpdatePasswordForm />
         </div>
       </div>
     </div>

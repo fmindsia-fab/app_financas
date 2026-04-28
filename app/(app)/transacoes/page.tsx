@@ -1,10 +1,10 @@
 import { createClient } from '@/lib/supabase/server'
 import { TransactionsClient } from '@/components/transactions-client'
 import { getUserCategories } from '@/lib/actions/categories'
-import type { Transaction } from '@/lib/types'
+import type { Transaction, TransactionType } from '@/lib/types'
 
 interface Props {
-  searchParams: Promise<{ mes?: string; ano?: string; categoria?: string; q?: string }>
+  searchParams: Promise<{ mes?: string; ano?: string; categoria?: string; q?: string; tipo?: string }>
 }
 
 export default async function TransacoesPage({ searchParams }: Props) {
@@ -35,6 +35,10 @@ export default async function TransacoesPage({ searchParams }: Props) {
     query = query.ilike('description', `%${params.q}%`)
   }
 
+  if (params.tipo === 'income' || params.tipo === 'expense') {
+    query = query.eq('type', params.tipo as TransactionType)
+  }
+
   const [{ data }, userCategories] = await Promise.all([query, getUserCategories()])
   const transactions: Transaction[] = data ?? []
 
@@ -53,6 +57,7 @@ export default async function TransacoesPage({ searchParams }: Props) {
         currentAno={ano}
         currentCategoria={params.categoria ?? 'all'}
         currentQ={params.q ?? ''}
+        currentTipo={params.tipo ?? 'all'}
         userCategories={userCategories}
       />
     </div>

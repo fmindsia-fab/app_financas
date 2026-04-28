@@ -25,7 +25,7 @@ export async function forgotPassword(formData: FormData) {
 
   const supabase = await createClient()
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${origin}/auth/callback?next=/atualizar-senha`,
+    redirectTo: `${origin}/atualizar-senha`,
   })
 
   if (error) return { error: error.message }

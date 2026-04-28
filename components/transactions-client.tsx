@@ -18,6 +18,7 @@ interface Props {
   currentAno: number
   currentCategoria: string
   currentQ: string
+  currentTipo: string
   userCategories: string[]
 }
 
@@ -31,7 +32,7 @@ const YEARS = [2023, 2024, 2025, 2026, 2027]
 
 const selectClass = "px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-[#1e293b] text-sm text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
 
-export function TransactionsClient({ transactions, currentMes, currentAno, currentCategoria, currentQ, userCategories }: Props) {
+export function TransactionsClient({ transactions, currentMes, currentAno, currentCategoria, currentQ, currentTipo, userCategories }: Props) {
   const router = useRouter()
 
   const [openCreate, setOpenCreate] = useState(false)
@@ -64,6 +65,7 @@ export function TransactionsClient({ transactions, currentMes, currentAno, curre
     params.set('ano', String(currentAno))
     params.set('categoria', currentCategoria)
     params.set('q', currentQ)
+    params.set('tipo', currentTipo)
     Object.entries(updates).forEach(([k, v]) => params.set(k, v))
     router.push(`/transacoes?${params.toString()}`)
   }
@@ -115,6 +117,12 @@ export function TransactionsClient({ transactions, currentMes, currentAno, curre
                   {userCategories.map(c => <option key={c} value={c}>{c}</option>)}
                 </optgroup>
               )}
+            </select>
+
+            <select value={currentTipo} onChange={e => updateParams({ tipo: e.target.value })} className={selectClass}>
+              <option value="all">Todos os tipos</option>
+              <option value="income">Receitas</option>
+              <option value="expense">Despesas</option>
             </select>
 
             <div className="relative">
