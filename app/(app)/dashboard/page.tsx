@@ -3,6 +3,8 @@ import { SummaryCards } from '@/components/summary-cards'
 import { CategoryPieChart } from '@/components/category-pie-chart'
 import { RecentTransactions } from '@/components/recent-transactions'
 import { IncomeExpenseChart } from '@/components/income-expense-chart'
+import { DashboardActions } from '@/components/dashboard-actions'
+import { getUserCategories } from '@/lib/actions/categories'
 import type { Transaction } from '@/lib/types'
 
 const MONTH_ABBR = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
@@ -35,29 +37,29 @@ export default async function DashboardPage() {
   const now = new Date()
   const year = now.getFullYear()
   const month = now.getMonth() + 1
-  const start = `${year}-${String(month).padStart(2, '0')}-01`
   const end = new Date(year, month, 0).toISOString().split('T')[0]
 
   const sixMonthsAgo = new Date(year, now.getMonth() - 5, 1)
   const sixMonthsStart = `${sixMonthsAgo.getFullYear()}-${String(sixMonthsAgo.getMonth() + 1).padStart(2, '0')}-01`
 
-  const { data: monthlyTx } = await supabase
-    .from('transactions')
-    .select('*')
-    .eq('user_id', user!.id)
-    .gte('date', sixMonthsStart)
-    .lte('date', end)
-    .order('date', { ascending: false })
-
-  const { data: recentTx } = await supabase
-    .from('transactions')
-    .select('*')
-    .eq('user_id', user!.id)
-    .order('date', { ascending: false })
-    .limit(5)
-
-  const transactions: Transaction[] = monthlyTx ?? []
-  const recent: Transaction[] = recentTx ?? []
+  const [transactions, recent, userCategories] = await Promise.all([
+    supabase
+      .from('transactions')
+      .select('*')
+      .eq('user_id', user!.id)
+      .gte('date', sixMonthsStart)
+      .lte('date', end)
+      .order('date', { ascending: false })
+      .then(({ data }) => data ?? [] as Transaction[]),
+    supabase
+      .from('transactions')
+      .select('*')
+      .eq('user_id', user!.id)
+      .order('date', { ascending: false })
+      .limit(5)
+      .then(({ data }) => data ?? [] as Transaction[]),
+    getUserCategories(),
+  ])
 
   const currentMonthTx = transactions.filter(t => {
     const d = t.date
@@ -69,16 +71,18 @@ export default async function DashboardPage() {
   const balance = totalIncome - totalExpense
 
   const chartData = getSixMonthsData(transactions, year)
-
   const monthName = now.toLocaleString('pt-BR', { month: 'long', year: 'numeric' })
 
   return (
     <div className="space-y-8 animate-fade-up">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white capitalize" style={{ fontFamily: 'Bricolage Grotesque, sans-serif' }}>
-          Dashboard
-        </h1>
-        <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Resumo de {monthName}</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white capitalize" style={{ fontFamily: 'Bricolage Grotesque, sans-serif' }}>
+            Dashboard
+          </h1>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Resumo de {monthName}</p>
+        </div>
+        <DashboardActions userCategories={userCategories} />
       </div>
 
       <SummaryCards
