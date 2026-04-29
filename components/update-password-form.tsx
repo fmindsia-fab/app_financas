@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, Loader2, CheckCircle2 } from 'lucide-react'
-import { createClient } from '@/lib/supabase/client'
 import { updatePasswordAction } from '@/lib/actions/auth-client'
 
 export function UpdatePasswordForm() {

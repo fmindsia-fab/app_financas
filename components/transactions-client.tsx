@@ -44,7 +44,9 @@ export function TransactionsClient({ transactions, currentMes, currentAno, curre
   const [, startTransition] = useTransition()
 
   useEffect(() => {
-    setSettledMap(Object.fromEntries(transactions.map(t => [t.id, t.settled])))
+    startTransition(() => {
+      setSettledMap(Object.fromEntries(transactions.map(t => [t.id, t.settled])))
+    })
   }, [transactions])
 
   async function handleToggleSettled(t: Transaction) {

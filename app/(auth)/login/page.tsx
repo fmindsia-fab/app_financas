@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, startTransition } from 'react'
 import Link from 'next/link'
 import { Eye, EyeOff, Loader2 } from 'lucide-react'
 import { login } from '@/lib/actions/auth'
@@ -18,8 +18,10 @@ export default function LoginPage() {
   useEffect(() => {
     const email = localStorage.getItem(STORAGE_KEY)
     if (email) {
-      setSavedEmail(email)
-      setRememberMe(true)
+      startTransition(() => {
+        setSavedEmail(email)
+        setRememberMe(true)
+      })
     }
   }, [])
 
