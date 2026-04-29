@@ -3,7 +3,6 @@
 import { useRouter } from 'next/navigation'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from 'recharts'
 import { useTheme } from 'next-themes'
-import type { Transaction } from '@/lib/types'
 import { formatCurrency } from '@/lib/utils'
 
 interface Props {

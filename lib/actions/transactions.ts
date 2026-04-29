@@ -24,7 +24,7 @@ async function validateTransaction(data: FormData, userId: string) {
     return { error: 'Tipo inválido' }
   }
 
-  const isStandard = CATEGORIES.includes(category as never)
+  const isStandard = (CATEGORIES as readonly string[]).includes(category)
   if (!isStandard) {
     const supabase = await createClient()
     const { data: custom } = await supabase

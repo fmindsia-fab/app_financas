@@ -1,6 +1,4 @@
-import Link from 'next/link'
-import { Loader2, MailCheck, ArrowLeft, AlertTriangle } from 'lucide-react'
-import { AppLogo } from '@/components/app-logo'
+import { Loader2 } from 'lucide-react'
 import { Suspense } from 'react'
 import { EsqueciSenhaContent } from '@/components/esqueci-senha-content'
 

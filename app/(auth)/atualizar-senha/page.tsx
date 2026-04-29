@@ -1,14 +1,12 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { UpdatePasswordForm } from '@/components/update-password-form'
 import { Loader2, AlertTriangle, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 
 export default function AtualizarSenhaPage() {
-  const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [validSession, setValidSession] = useState(false)
   const [email, setEmail] = useState('')
