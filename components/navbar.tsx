@@ -20,7 +20,7 @@ const navLinks = [
   { href: '/relatorios', label: 'Relatórios', icon: BarChart3 },
 ]
 
-export default function Navbar({ user }: { user: SupabaseUser }) {
+export default function Navbar({ user, version }: { user: SupabaseUser; version?: string }) {
   const pathname = usePathname()
   const router = useRouter()
 
@@ -28,7 +28,7 @@ export default function Navbar({ user }: { user: SupabaseUser }) {
     <nav className="sticky top-0 z-40 bg-white/85 dark:bg-slate-950/95 backdrop-blur-xl border-b border-slate-200/70 dark:border-slate-800/70">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
         {/* Logo */}
-        <AppLogo href="/dashboard" size="md" className="flex-shrink-0" />
+        <AppLogo href="/dashboard" size="md" version={version} className="flex-shrink-0" />
 
         {/* Nav links */}
         <div className="hidden md:flex items-center gap-1.5">
